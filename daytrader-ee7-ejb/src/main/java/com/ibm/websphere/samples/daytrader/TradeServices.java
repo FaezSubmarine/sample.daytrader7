@@ -18,11 +18,14 @@ package com.ibm.websphere.samples.daytrader;
 import java.math.BigDecimal;
 import java.util.Collection;
 
+import javax.servlet.http.Part;
+
 import com.ibm.websphere.samples.daytrader.beans.MarketSummaryDataBean;
 import com.ibm.websphere.samples.daytrader.beans.RunStatsDataBean;
 import com.ibm.websphere.samples.daytrader.entities.AccountDataBean;
 import com.ibm.websphere.samples.daytrader.entities.AccountProfileDataBean;
 import com.ibm.websphere.samples.daytrader.entities.HoldingDataBean;
+import com.ibm.websphere.samples.daytrader.entities.KYCBean;
 import com.ibm.websphere.samples.daytrader.entities.OrderDataBean;
 import com.ibm.websphere.samples.daytrader.entities.QuoteDataBean;
 
@@ -156,7 +159,7 @@ public interface TradeServices {
      * @return Collection OrderDataBeans providing detailed order information
      */
     Collection<?> getClosedOrders(String userID) throws Exception;
-
+    Collection<?> getOrdersByDate(String userID,java.util.Date setDate,boolean yearly) throws Exception;
     /**
      * Given a market symbol, price, and details, create and return a new
      * {@link QuoteDataBean}
@@ -237,6 +240,8 @@ public interface TradeServices {
      *            account profile data in AccountProfileDataBean
      */
     AccountProfileDataBean getAccountProfileData(String userID) throws Exception;
+    
+    KYCBean getKYC(String userID) throws Exception;
 
     /**
      * Update userID's account profile information using the provided
@@ -293,7 +298,9 @@ public interface TradeServices {
      */
     AccountDataBean register(String userID, String password, String fullname, String address, String email, String creditcard, BigDecimal openBalance)
             throws Exception;
-
+    
+    KYCBean fileUpload(String userID,Part kyc,String fileName);
+    
     /**
      * Reset the TradeData by - removing all newly registered users by scenario
      * servlet (i.e. users with userID's beginning with "ru:") * - removing all

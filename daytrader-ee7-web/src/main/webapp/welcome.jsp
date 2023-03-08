@@ -16,7 +16,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-<TITLE>DayTrader Login</TITLE>
+<TITLE>Capstone Login</TITLE>
 <LINK rel="stylesheet" href="style.css" type="text/css" />
 <link rel="shortcut icon" href="./favicon.ico" />
 </HEAD>
@@ -26,10 +26,10 @@
         <TBODY>
             <TR>
                 <TD bgcolor="#c93333" align="left" width="640"
-                    height="10"><B><FONT color="#ffffff">DayTrader
+                    height="10"><B><FONT color="#ffffff">Capstone
                             Login</FONT></B></TD>
                 <TD align="center" bgcolor="#000000" width="100"
-                    height="10"><FONT color="#ffffff"><B>DayTrader</B></FONT></TD>
+                    height="10"><FONT color="#ffffff"><B>Capstone</B></FONT></TD>
             </TR>
         </TBODY>
     </TABLE>
@@ -90,8 +90,7 @@
             </TR>
             <TR>
                 <TD bgcolor="#e7e4e7" rowspan="4"></TD>
-                <TD><B><FONT size="-1" color="#000000">First
-                            time user? &nbsp;Please Register</FONT></B></TD>
+                <TD><B><FONT size="-1" color="#000000">First time user? &nbsp;Please Register</FONT></B></TD>
             </TR>
             <TR>
                 <TD></TD>
@@ -99,7 +98,7 @@
             <TR>
                 <TD align="right">
                     <BLOCKQUOTE>
-                        <A href="register.jsp">Register&nbsp;With&nbsp;DayTrader</A>
+                        <A href="register.jsp">Register&nbsp;With&nbsp;Capstone</A>
                     </BLOCKQUOTE>
                 </TD>
             </TR>
@@ -122,10 +121,10 @@
             </TR>
             <TR>
                 <TD bgcolor="#c93333" align="left" width="640"
-                    height="10"><B><FONT color="#ffffff">DayTrader
+                    height="10"><B><FONT color="#ffffff">Capstone
                             Login</FONT></B></TD>
                 <TD align="center" bgcolor="#000000" width="100"
-                    height="10"><FONT color="#ffffff"><B>DayTrader</B></FONT></TD>
+                    height="10"><FONT color="#ffffff"><B>Capstone</B></FONT></TD>
             </TR>
         </TBODY>
     </TABLE>

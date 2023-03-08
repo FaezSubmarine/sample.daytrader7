@@ -43,6 +43,7 @@
                 <TD><B><A href="app?action=mksummary">Market Summary</A></B></TD>
                 <TD><B><A href="app?action=portfolio">Portfolio</A></B></TD>
                 <TD><B><A href="app?action=quotes&amp;symbols=s:0,s:1,s:2,s:3,s:4">Quotes/Trade</A></B></TD>
+                <TD><B><A href="app?action=report">Report</A></B></TD>
                 <TD><B><A href="app?action=logout">Logoff</A></B></TD>
                 <TD></TD>
             </TR>

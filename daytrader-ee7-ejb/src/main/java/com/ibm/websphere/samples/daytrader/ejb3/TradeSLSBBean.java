@@ -15,8 +15,12 @@
  */
 package com.ibm.websphere.samples.daytrader.ejb3;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -45,6 +49,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.servlet.http.Part;
 import javax.transaction.RollbackException;
 
 import com.ibm.websphere.samples.daytrader.TradeAction;
@@ -54,6 +59,7 @@ import com.ibm.websphere.samples.daytrader.beans.RunStatsDataBean;
 import com.ibm.websphere.samples.daytrader.entities.AccountDataBean;
 import com.ibm.websphere.samples.daytrader.entities.AccountProfileDataBean;
 import com.ibm.websphere.samples.daytrader.entities.HoldingDataBean;
+import com.ibm.websphere.samples.daytrader.entities.KYCBean;
 import com.ibm.websphere.samples.daytrader.entities.OrderDataBean;
 import com.ibm.websphere.samples.daytrader.entities.QuoteDataBean;
 import com.ibm.websphere.samples.daytrader.util.CompleteOrderThread;
@@ -349,6 +355,7 @@ public class TradeSLSBBean implements TradeSLSBRemote, TradeSLSBLocal {
         }
 
         AccountProfileDataBean profile = entityManager.find(AccountProfileDataBean.class, userID);
+        System.out.println("profile "+profile.toString());
         AccountDataBean account = profile.getAccount();
         return account.getOrders();
     }
@@ -398,7 +405,49 @@ public class TradeSLSBBean implements TradeSLSBRemote, TradeSLSBLocal {
             throw new EJBException("TradeSLSBBean.getClosedOrders - error", e);
         }
     }
+	@Override
+	public Collection<?> getOrdersByDate(String userID,java.util.Date curDate, boolean yearly) throws Exception {
+        try {
+        	int months = yearly?12:1;
+            /* I want to do a CriteriaUpdate here, but there are issues with JBoss/Hibernate */
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<OrderDataBean> criteriaQuery = criteriaBuilder.createQuery(OrderDataBean.class);
+            Root<OrderDataBean> orders = criteriaQuery.from(OrderDataBean.class);
+            criteriaQuery.select(orders);
+            criteriaQuery.where(
+              criteriaBuilder.equal(orders.get("account").get("profile").get("userID"),
+              criteriaBuilder.parameter(String.class, "p_userid")),
+              criteriaBuilder.between(orders.get("completionDate"),
+              criteriaBuilder.literal(Timestamp.valueOf(LocalDateTime.now().minusMonths(months))),
+              criteriaBuilder.literal(curDate)));
+            
+            TypedQuery<OrderDataBean> q = entityManager.createQuery(criteriaQuery);
+            q.setParameter("p_status", "closed");
+            q.setParameter("p_userid", userID);
+            List<OrderDataBean> results = q.getResultList();
+//            
+//            Iterator<OrderDataBean> itr = results.iterator();
+            
+            // Spin through the orders to remove or mark completed
+//            while (itr.hasNext()) {
+//                OrderDataBean order = itr.next();
+//                // TODO: Investigate ConncurrentModification Exceptions                                
+//                if (TradeConfig.getLongRun()) {
+//                    //Added this for Longruns (to prevent orderejb growth)
+//                    entityManager.remove(order); 
+//                }
+//                else {
+//                    order.setOrderStatus("completed");
+//                }
+//            }
 
+            return results;
+            
+        } catch (Exception e) {
+            Log.error("TradeSLSBBean.getClosedOrders", e);
+            throw new EJBException("TradeSLSBBean.getClosedOrders - error", e);
+        }
+	}
     @Override
     public QuoteDataBean createQuote(String symbol, String companyName, BigDecimal price) {
         try {
@@ -578,7 +627,7 @@ public class TradeSLSBBean implements TradeSLSBRemote, TradeSLSBLocal {
 
     @Override
     public AccountDataBean register(String userID, String password, String fullname, String address, String email, String creditcard, BigDecimal openBalance) {
-        AccountDataBean account = null;
+    	AccountDataBean account = null;
         AccountProfileDataBean profile = null;
 
         if (Log.doTrace()) {
@@ -589,22 +638,69 @@ public class TradeSLSBBean implements TradeSLSBRemote, TradeSLSBLocal {
         profile = entityManager.find(AccountProfileDataBean.class, userID);
 
         if (profile != null) {
-            Log.error("Failed to register new Account - AccountProfile with userID(" + userID + ") already exists");
+        	System.out.println("Failed to register new Account - AccountProfile with userID(" + userID + ") already exists");
             return null;
         } else {
-            profile = new AccountProfileDataBean(userID, password, fullname, address, email, creditcard);
-            account = new AccountDataBean(0, 0, null, new Timestamp(System.currentTimeMillis()), openBalance, openBalance, userID);
+        	try {
+                profile = new AccountProfileDataBean(userID, password, fullname, address, email, creditcard);
+                account = new AccountDataBean(0, 0, null, new Timestamp(System.currentTimeMillis()), openBalance, openBalance, userID);
 
-            profile.setAccount(account);
-            account.setProfile(profile);
+                profile.setAccount(account);
+                account.setProfile(profile);
 
-            entityManager.persist(profile);
-            entityManager.persist(account);
+                entityManager.persist(profile);
+                entityManager.persist(account);
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+//            profile = new AccountProfileDataBean(userID, password, fullname, address, email, creditcard);
+//            account = new AccountDataBean(0, 0, null, new Timestamp(System.currentTimeMillis()), openBalance, openBalance, userID);
+//
+//            profile.setAccount(account);
+//            account.setProfile(profile);
+//
+//            entityManager.persist(profile);
+//            entityManager.persist(account);
         }
 
         return account;
     }
+	@Override
+	public KYCBean fileUpload(String userID, Part kyc,String fileName) {
+		KYCBean bean = entityManager.find(KYCBean.class, userID);
+		boolean isCreate = bean==null;
+		//KYCBean bean = new KYCBean(userID,kyc);
+		//KYCBean bean = null;
+		try {
+			InputStream is = kyc.getInputStream();
+			
+			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
+			int nRead;
+			byte[] data = new byte[16384];
+
+			while ((nRead = is.read(data, 0, data.length)) != -1) {
+			  buffer.write(data, 0, nRead);
+			}
+
+			byte[] kycByte = buffer.toByteArray();
+			
+			bean = new KYCBean();
+			bean.setUserID(userID);
+			bean.setKYCName(fileName);
+			bean.setKYC(kycByte);
+			if(isCreate) {
+				entityManager.persist(bean);
+			}
+			else {
+				System.out.println("merging");
+				entityManager.merge(bean);
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return bean;
+	}
     @Override
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public RunStatsDataBean resetTrade(boolean deleteAll) throws Exception {
@@ -725,4 +821,13 @@ public class TradeSLSBBean implements TradeSLSBRemote, TradeSLSBLocal {
             Log.trace("publishQuotePriceChange: " + TradeConfig.getPublishQuotePriceChange());
         }
     }
+
+	@Override
+	public KYCBean getKYC(String userID) throws Exception {
+		return entityManager.find(KYCBean.class, userID);
+	}
+
+
+
+
 }

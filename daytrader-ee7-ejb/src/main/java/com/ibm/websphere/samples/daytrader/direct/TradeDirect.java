@@ -25,6 +25,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.enterprise.concurrent.ManagedThreadFactory;
 import javax.jms.ConnectionFactory;
@@ -34,6 +35,7 @@ import javax.jms.Queue;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.naming.InitialContext;
+import javax.servlet.http.Part;
 import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
 
@@ -44,6 +46,7 @@ import com.ibm.websphere.samples.daytrader.beans.RunStatsDataBean;
 import com.ibm.websphere.samples.daytrader.entities.AccountDataBean;
 import com.ibm.websphere.samples.daytrader.entities.AccountProfileDataBean;
 import com.ibm.websphere.samples.daytrader.entities.HoldingDataBean;
+import com.ibm.websphere.samples.daytrader.entities.KYCBean;
 import com.ibm.websphere.samples.daytrader.entities.OrderDataBean;
 import com.ibm.websphere.samples.daytrader.entities.QuoteDataBean;
 import com.ibm.websphere.samples.daytrader.util.CompleteOrderThread;
@@ -245,12 +248,15 @@ public class TradeDirect implements TradeServices {
             } catch (JMSException je) {
                 Log.error("TradeBean:buy(" + userID + "," + symbol + "," + quantity + ") --> failed to queueOrder", je);
                 /* On exception - cancel the order */
-
+                System.out.println("TradeBean:buy(" + userID + "," + symbol + "," + quantity + ") --> failed to queueOrder "+ je);
                 cancelOrder(conn, orderData.getOrderID());
             }
-
+            catch(Exception e) {
+            	System.out.println("some other errors "+e);
+            }
             orderData = getOrderData(conn, orderData.getOrderID().intValue());
-
+            
+            //System.out.println("is account data orders null"+(accountData.getOrders() == null));
             if (txn != null) {
                 if (Log.doTrace()) {
                     Log.trace("TradeDirect:buy committing global transaction");
@@ -270,7 +276,6 @@ public class TradeDirect implements TradeServices {
         } finally {
             releaseConn(conn);
         }
-
         return orderData;
     }
 
@@ -1111,6 +1116,7 @@ public class TradeDirect implements TradeServices {
             orderData = getOrderDataFromResultSet(rs);
         }
         stmt.close();
+        //System.out.println("is OrderData null?"+(orderData==null));
         return orderData;
     }
 
@@ -2116,5 +2122,23 @@ public class TradeDirect implements TradeServices {
     private void setInGlobalTxn(boolean inGlobalTxn) {
         this.inGlobalTxn = inGlobalTxn;
     }
+
+	@Override
+	public KYCBean fileUpload(String userID, Part kyc,String fileName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public KYCBean getKYC(String userID) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<?> getOrdersByDate(String userID, Date setDate, boolean yearly) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

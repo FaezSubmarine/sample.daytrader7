@@ -28,6 +28,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 
 import javax.naming.InitialContext;
+import javax.servlet.http.Part;
 
 import com.ibm.websphere.samples.daytrader.beans.MarketSummaryDataBean;
 import com.ibm.websphere.samples.daytrader.beans.RunStatsDataBean;
@@ -37,6 +38,7 @@ import com.ibm.websphere.samples.daytrader.ejb3.TradeSLSBRemote;
 import com.ibm.websphere.samples.daytrader.entities.AccountDataBean;
 import com.ibm.websphere.samples.daytrader.entities.AccountProfileDataBean;
 import com.ibm.websphere.samples.daytrader.entities.HoldingDataBean;
+import com.ibm.websphere.samples.daytrader.entities.KYCBean;
 import com.ibm.websphere.samples.daytrader.entities.OrderDataBean;
 import com.ibm.websphere.samples.daytrader.entities.QuoteDataBean;
 import com.ibm.websphere.samples.daytrader.util.FinancialUtils;
@@ -112,6 +114,7 @@ public class TradeAction implements TradeServices {
             	
             	if (tradeLocal == null && tradeRemote == null ) {
             		InitialContext context = new InitialContext();
+            		//todo edit tradeslsbean so register can receive files
             		tradeLocal = (TradeSLSBLocal) context.lookup("java:comp/env/ejb/TradeSLSBBean");
             		tradeRemote = (TradeSLSBRemote) context.lookup("java:comp/env/ejb/TradeSLSBBeanRemote");
             	}
@@ -558,7 +561,11 @@ public class TradeAction implements TradeServices {
         
         return accountProfileData;
     }
-
+    @Override
+    public KYCBean getKYC(String userID) throws Exception {
+    	KYCBean kyc = trade.getKYC(userID);
+    	return kyc;
+    }    
     /**
      * Update userID's account profile information using the provided
      * AccountProfileDataBean object
@@ -661,4 +668,15 @@ public class TradeAction implements TradeServices {
                 
         return runStatsData;
     }
+
+	@Override
+	public KYCBean fileUpload(String userID, Part kyc, String fileName) {
+		// TODO Auto-generated method stub
+		return trade.fileUpload(userID, kyc, fileName);
+	}
+
+	@Override
+	public Collection<?> getOrdersByDate(String userID,java.util.Date curDate, boolean yearly) throws Exception {
+		return trade.getOrdersByDate(userID,curDate, yearly);
+	}
 }

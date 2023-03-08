@@ -152,7 +152,11 @@ public class OrderDataBean implements Serializable {
                 + getOpenDate() + "\n\t completionDate: " + getCompletionDate() + "\n\t       quantity: " + getQuantity() + "\n\t          price: "
                 + getPrice() + "\n\t       orderFee: " + getOrderFee() + "\n\t         symbol: " + getSymbol();
     }
-
+    public String toCSV() {
+    	return getOrderID() + ","+ getOrderStatus() +"," + getOpenDate() + ","
+                + getCompletionDate() + "," + getOrderFee() + "," + getOrderType() + ","
+                + getSymbol() + "," + getPrice()+"\n";
+    }
     public String toHTML() {
         return "<BR>Order <B>" + getOrderID() + "</B>" + "<LI>      orderType: " + getOrderType() + "</LI>" + "<LI>    orderStatus: " + getOrderStatus()
                 + "</LI>" + "<LI>       openDate: " + getOpenDate() + "</LI>" + "<LI> completionDate: " + getCompletionDate() + "</LI>"

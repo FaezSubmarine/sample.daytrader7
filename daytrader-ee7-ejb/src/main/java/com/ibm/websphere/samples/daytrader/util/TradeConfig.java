@@ -92,7 +92,7 @@ public class TradeConfig {
     private static boolean actionTrace = false;
     private static boolean updateQuotePrices = true;
     private static int primIterations = 1;
-    private static boolean longRun = true;
+    private static boolean longRun = false;
     private static boolean publishQuotePriceChange = true;
     private static int percentSentToWebsocket = 5;
     private static boolean displayOrderAlerts = true;
@@ -177,14 +177,16 @@ public class TradeConfig {
     public static final int CONFIG_PAGE = 7;
     public static final int STATS_PAGE = 8;
     public static final int MARKET_SUMMARY_PAGE = 9;
+    public static final int REPORT_PAGE = 10;
+
 
     // FUTURE Add XML/XSL View
     public static String[][] webUI = {
             { "/welcome.jsp", "/register.jsp", "/portfolio.jsp", "/quote.jsp", "/tradehome.jsp", "/account.jsp", "/order.jsp", "/config.jsp", "/runStats.jsp",
-                    "/marketSummary.jsp" },
+                    "/marketSummary.jsp","/report.jsp" },
             // JSP Interface
             { "/welcomeImg.jsp", "/registerImg.jsp", "/portfolioImg.jsp", "/quoteImg.jsp", "/tradehomeImg.jsp", "/accountImg.jsp", "/orderImg.jsp",
-                    "/config.jsp", "/runStats.jsp", "/marketSummary.jsp" },
+                    "/config.jsp", "/runStats.jsp", "/marketSummary.jsp","/report.jsp" },
     // JSP Interface
     };
 
@@ -781,7 +783,7 @@ public class TradeConfig {
     }
 
     public static void setLongRun(boolean longRun) {
-        TradeConfig.longRun = longRun;
+        TradeConfig.longRun = false;
     }
 
     public static void setPublishQuotePriceChange(boolean publishQuotePriceChange) {

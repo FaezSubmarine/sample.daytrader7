@@ -217,13 +217,18 @@ public class AccountDataBean implements Serializable {
      */
 
     public Collection<OrderDataBean> getOrders() {
+    	System.out.println("how big is it? "+orders.size());
         return orders;
     }
 
     public void setOrders(Collection<OrderDataBean> orders) {
         this.orders = orders;
     }
-
+    
+    public void addOrder(OrderDataBean order) {
+    	this.orders.add(order);
+    }
+    
     public Collection<HoldingDataBean> getHoldings() {
         return holdings;
     }

@@ -16,15 +16,18 @@
 package com.ibm.websphere.samples.daytrader.web;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
 import com.ibm.websphere.samples.daytrader.util.Log;
 import com.ibm.websphere.samples.daytrader.util.TradeConfig;
@@ -38,6 +41,7 @@ import com.ibm.websphere.samples.daytrader.util.TradeConfig;
  */
 
 @WebServlet(name = "TradeAppServlet", urlPatterns = { "/app" })
+@MultipartConfig
 public class TradeAppServlet extends HttpServlet {
 
     private static final long serialVersionUID = 481530522846648373L;
@@ -107,7 +111,6 @@ public class TradeAppServlet extends HttpServlet {
      *            Object that encapsulates the response from the servlet
      */
     public void performTask(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         String action = null;
         String userID = null;
         // String to create full dispatch path to TradeAppServlet w/ request
@@ -120,6 +123,7 @@ public class TradeAppServlet extends HttpServlet {
         action = req.getParameter("action");
 
         ServletContext ctx = getServletConfig().getServletContext();
+    	System.out.println("servlet perform task "+action);
 
         if (action == null) {
             tsAction.doWelcome(ctx, req, resp, "");
@@ -130,6 +134,7 @@ public class TradeAppServlet extends HttpServlet {
             tsAction.doLogin(ctx, req, resp, userID, passwd);
             return;
         } else if (action.equals("register")) {
+        	
             userID = req.getParameter("user id");
             String passwd = req.getParameter("passwd");
             String cpasswd = req.getParameter("confirm passwd");
@@ -138,7 +143,13 @@ public class TradeAppServlet extends HttpServlet {
             String money = req.getParameter("money");
             String email = req.getParameter("email");
             String smail = req.getParameter("snail mail");
+            Part filePart = req.getPart("kyc");
             tsAction.doRegister(ctx, req, resp, userID, passwd, cpasswd, fullname, ccn, money, email, smail);
+            if(filePart !=null) {
+            	String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            	tsAction.doFileUpload(filePart, userID,fileName);
+            }
+            
             return;
         }
 
@@ -164,22 +175,42 @@ public class TradeAppServlet extends HttpServlet {
             tsAction.doSell(ctx, req, resp, userID, new Integer(holdingID));
         } else if (action.equals("portfolio") || action.equals("portfolioNoEdge")) {
             tsAction.doPortfolio(ctx, req, resp, userID, "Portfolio as of " + new java.util.Date());
-        } else if (action.equals("logout")) {
+        }
+        else if(action.equals("report")) {
+        	tsAction.doReport(ctx, req, resp, userID, userID);
+        }
+        else if(action.equals("download_report")) {
+        	tsAction.doDownloadReport(ctx, req, resp, userID, action, req.getParameter("current_date"));
+        }
+        else if(action.equals("download_KYC")) {
+        	tsAction.doDownloadKYC(ctx, req, resp, userID);
+        }
+        else if (action.equals("logout")) {
             tsAction.doLogout(ctx, req, resp, userID);
         } else if (action.equals("home")) {
             tsAction.doHome(ctx, req, resp, userID, "Ready to Trade");
         } else if (action.equals("account")) {
             tsAction.doAccount(ctx, req, resp, userID, "");
-        } else if (action.equals("update_profile")) {
+        }
+        else if (action.equals("update_profile")) {
             String password = req.getParameter("password");
             String cpassword = req.getParameter("cpassword");
             String fullName = req.getParameter("fullname");
             String address = req.getParameter("address");
             String creditcard = req.getParameter("creditcard");
             String email = req.getParameter("email");
+            
+            Part filePart = req.getPart("kyc");
+            System.out.println("file part update "+filePart);
+            if(filePart !=null) {
+            	String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            	tsAction.doFileUpload(filePart, userID,fileName);
+            }
+            
             tsAction.doAccountUpdate(ctx, req, resp, userID, password == null ? "" : password.trim(), cpassword == null ? "" : cpassword.trim(),
                     fullName == null ? "" : fullName.trim(), address == null ? "" : address.trim(), creditcard == null ? "" : creditcard.trim(),
                     email == null ? "" : email.trim());
+            
         } else if (action.equals("mksummary")) {
             tsAction.doMarketSummary(ctx, req, resp, userID);
         } else {

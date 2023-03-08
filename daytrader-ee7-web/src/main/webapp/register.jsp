@@ -36,10 +36,10 @@
         <TBODY>
             <TR>
                 <TD bgcolor="#c93333" align="left" width="640"
-                    height="10"><B><FONT color="#ffffff">DayTrader
+                    height="10"><B><FONT color="#ffffff">Capstone
                             Register</FONT></B></TD>
                 <TD align="center" bgcolor="#000000" width="100"
-                    height="10"><FONT color="#ffffff"><B>DayTrader</B></FONT></TD>
+                    height="10"><FONT color="#ffffff"><B>Capstone</B></FONT></TD>
             </TR>
         </TBODY>
     </TABLE>
@@ -52,7 +52,7 @@
             </TR>
         </TBODY>
     </TABLE>
-    <TABLE width="665">
+    <TABLE width="666">
         <TBODY>
             <TR>
                 <TD width="2%" bgcolor="#e7e4e7"></TD>
@@ -61,7 +61,8 @@
             </TR>
         </TBODY>
     </TABLE>
-    <FORM action="app">
+    <FORM action="app" method="post" enctype="multipart/form-data">
+            <INPUT type="hidden" name="action" value="register">
         <TABLE width="665">
             <TBODY align="right">
                 <TR>
@@ -130,6 +131,13 @@
                         value="<%= creditcard==null ? fakeCC : creditcard %>"
                         readonly></TD>
                 </TR>
+                
+                <TR>
+                    <TD colspan="4" align="right"><B><FONT
+                            COLOR="#FF0000">*</FONT>Document Proof:</B></TD>
+                    <TD colspan="2" align="right">&nbsp;&nbsp;
+                    <input type="file" name="kyc"></TD>
+                </TR>
                 <TR>
                     <TD align="center"></TD>
                     <TD align="center"></TD>
@@ -144,7 +152,6 @@
                 </TR>
             </TBODY>
         </TABLE>
-        <INPUT type="hidden" name="action" value="register">
     </FORM>
     <TABLE height="54" style="font-size: smaller">
         <TBODY>
@@ -158,10 +165,10 @@
             </TR>
             <TR>
                 <TD bgcolor="#c93333" align="left" width="640"
-                    height="10"><B><FONT color="#ffffff">DayTrader
+                    height="10"><B><FONT color="#ffffff">Capstone
                             Register</FONT></B></TD>
                 <TD align="center" bgcolor="#000000" width="100"
-                    height="10"><FONT color="#ffffff"><B>DayTrader</B></FONT></TD>
+                    height="10"><FONT color="#ffffff"><B>Capstone</B></FONT></TD>
             </TR>
         </TBODY>
     </TABLE>

@@ -25,7 +25,10 @@
     <%@ page
         import="java.util.Collection,
                 java.util.Iterator,
-                java.math.BigDecimal,com.ibm.websphere.samples.daytrader.entities.OrderDataBean,com.ibm.websphere.samples.daytrader.util.FinancialUtils"
+                java.math.BigDecimal,
+                com.ibm.websphere.samples.daytrader.entities.KYCBean,
+                com.ibm.websphere.samples.daytrader.entities.OrderDataBean,
+                com.ibm.websphere.samples.daytrader.util.FinancialUtils"
         session="true" isThreadSafe="true" isErrorPage="false"%>
     <jsp:useBean id="results" scope="request" type="java.lang.String" />
     <jsp:useBean id="accountData"
@@ -34,6 +37,9 @@
     <jsp:useBean id="accountProfileData"
         type="com.ibm.websphere.samples.daytrader.entities.AccountProfileDataBean"
         scope="request" />
+<%--     <jsp:useBean id="KYC"
+        type="com.ibm.websphere.samples.daytrader.entities.KYCBean"
+        scope="request" /> --%>
     <jsp:useBean id="orderDataBeans" type="java.util.Collection<?>"
         scope="request" />
     <TABLE height="54">
@@ -103,6 +109,7 @@
                                 <TD><%=closedOrderData.getOrderType()%></TD>
                                 <TD><%=FinancialUtils.printQuoteLink(closedOrderData.getSymbol())%></TD>
                                 <TD><%=closedOrderData.getQuantity()%></TD>
+                                
                             </TR>
                             <%
                                 }
@@ -260,7 +267,7 @@
                             </TR>
                         </TBODY>
                     </TABLE>
-                    <FORM>
+                    <FORM action="app" method="post" enctype="multipart/form-data">
                         <TABLE width="100%">
                             <TBODY>
                                 <TR>
@@ -322,6 +329,14 @@
                                         maxlength="30" name="creditcard"
                                         value="<%=accountProfileData.getCreditCard()%>"
                                         readonly></TD>
+                                </TR>
+                                <TR>
+                                <%if(request.getAttribute("KYC")!=null){
+                                	%>
+                                	<!-- TODO: Allow users to download what file they upload -->
+                                	<TD><a href="app?action=download_KYC"><%=request.getAttribute("KYC").toString() %></a> </TD>
+                                <%} %>
+                                <TD><input type="file" name="kyc"></TD>
                                 </TR>
                                 <TR>
                                     <TD align="right" width="113"><A

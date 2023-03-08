@@ -238,10 +238,10 @@ public class TradeConfigServlet extends HttpServlet {
         
         String enableLongRun = req.getParameter("EnableLongRun");
 
-        if (enableLongRun != null)
-            TradeConfig.setLongRun(true);
-        else
-            TradeConfig.setLongRun(false);
+//        if (enableLongRun != null)
+//            TradeConfig.setLongRun(true);
+//        else
+//            TradeConfig.setLongRun(false);
         currentConfigStr += "\t\tLong Run Enabled:\t\t" + TradeConfig.getLongRun() + "\n";
 
         String displayOrderAlerts = req.getParameter("DisplayOrderAlerts");
