@@ -1,14 +1,14 @@
 This is a capstone project of my Java training where I edited the original website to the following requirements given to me by the trainer:
 
-1)replace the logo with Capstone text or image
+1)Replace the logo with Capstone text or image
 
-2)in login, replace the word DayTrader with capstone
+2)In login, replace the word DayTrader with capstone
 
-3) In register form, add a field 'know your customer(kyc)' document. It has to be an attachment input. Save that document in either the folder or database.
+3)In register form, add a field 'know your customer(kyc)' document. It has to be an attachment input. Save that document in either the folder or database.
 
-4) In the account page, the kyc document should be there too. The user should also be able to update that document.
+4)In the account page, the kyc document should be there too. The user should also be able to update that document.
 
-5) In the Trading & Portfolio page, add a new tab called 'Reports' where user get monthly or annual reports. The reports should contain the transactions they have done that month or year. The report should also have a download button for the user to download the report as a file(.csv, .xls,.pdf,etc).
+5)In the Trading & Portfolio page, add a new tab called 'Reports' where user get monthly or annual reports. The reports should contain the transactions they have done that month or year. The report should also have a download button for the user to download the report as a file(.csv, .xls,.pdf,etc).
 # Original Readme
 # sample.daytrader7 [![Build Status](https://travis-ci.org/WASdev/sample.daytrader7.svg?branch=master)](https://travis-ci.org/WASdev/sample.daytrader7)
 
